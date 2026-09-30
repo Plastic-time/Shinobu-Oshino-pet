@@ -1,61 +1,70 @@
-# 忍野忍 · Shinobu ChatGPT Pet
+# 忍野忍 · Shinobu Oshino Pet
 
-《化物语》头盔与护目镜造型的忍野忍动画宠物素材。保留深绿头盔、尖束金发、金色眼睛和粉裙红结，提供 **9 种动作、16 向视线，共 73 帧**。
+一个独立运行的 **Windows 桌宠**。采用《化物语》中忍野忍的头盔与护目镜造型：深绿头盔、金发金瞳、粉裙红结。
 
-An unofficial, AI-generated Shinobu Oshino animated companion sprite pack, using the Bakemonogatari helmet-and-goggles design. Includes nine animation states and sixteen look directions in a transparent Pets v2 sprite sheet.
+她会安静地待在你放下的位置，偶尔眨眼，跟着鼠标转动视线。点一下挥手，双击跳跃。无需账号、浏览器或其他客户端，全程离线。
+
+An unofficial Shinobu Oshino desktop companion for Windows. A small, offline, transparent window with click interactions, dragging, gaze following and a system tray menu. She stays where you put her.
+
+![Windows 桌宠实机预览，背景为测试展示窗口](previews/desktop-preview.png)
+
+## 下载并运行
+
+**[下载最新版 Windows 桌宠](https://github.com/Plastic-time/Shinobu-Oshino-pet/releases/latest)**
+
+1. 下载 `Shinobu-Oshino-pet-windows-v2.0.0.zip`，解压到你喜欢的文件夹。
+2. 双击 `Shinobu-Oshino-pet.exe`。第一次运行时，她会出现在主屏幕右下方。
+3. 按住角色拖到合适的位置。右键角色或任务栏右下角的托盘图标可打开菜单。
+
+支持 Windows 10 / 11，使用系统的 .NET Framework；无需安装 Python、Node.js 或额外软件包。程序和图片打包在同一个 EXE 中，无需管理员权限。已在 Windows 11 环境验证；其他系统尚未实机测试。
+
+程序尚未进行代码签名，Windows 下载保护可能显示未知发布者。可以核对发布页的 SHA-256，或从源码自行构建；不需要关闭杀毒软件。
+
+## 怎么陪她玩
+
+| 操作 | 效果 |
+| --- | --- |
+| 单击 | 挥手；等待系统双击判定后播放 |
+| 双击 | 跳一下，然后回到待机 |
+| 按住左键拖动 | 改变位置，松手后记住位置 |
+| 移动鼠标 | 16 向视线跟随，停止一会儿恢复正面 |
+| 右键 → 其他动作 | 眨眼、原地跑、等待、思考等 |
+| 右键 → 大小 | 100%、125%（默认）、150%、200% |
+| 右键 → 暂停动画 | 暂停当前画面，仍可拖动；点击互动会恢复动画 |
+| 托盘图标双击 | 回到主屏幕；找不到她时可用 |
+| 右键 → 退出 | 关闭桌宠，同时移除托盘图标 |
+
+默认固定在原地，不会自动走动。默认置顶，可在菜单里取消。透明区域不挡住后面的窗口；角色不会抢走正在输入的窗口焦点。移动到屏幕边缘时会保留在可用桌面内，断开显示器后会调整位置。
+
+设置只保存在 `%LOCALAPPDATA%\ShinobuOshinoPet\settings.txt`，包括位置、大小、视线、置顶和暂停选项。不自动设置开机启动，不联网，不读取你的文档或键盘输入。
 
 ## 动画预览
 
 | 日常动作 | 视线跟随 |
 | --- | --- |
-| ![忍野忍日常动作](previews/all-states.gif) | ![16 向视线循环](previews/look-loop.gif) |
-
-![待机、挥手、跳跃与检查动作](previews/four-states.png)
+| ![日常动作](previews/all-states.gif) | ![视线循环](previews/look-loop.gif) |
 
 [观看 MP4](previews/all-states.mp4) · [全部帧预览](previews/contact-sheet.png) · [16 向视线对照](previews/look-directions.png)
 
-## 下载与规格
+## 源码与素材
 
-- [下载透明精灵图](assets/spritesheet.png)
-- [下载 v1.0.0 发布包](https://github.com/Plastic-time/shinobu-chatgpt-pet/releases/tag/v1.0.0)
-- 尺寸：**1536 × 2288 px**，RGBA PNG。
-- 布局：8 列 × 11 行，每格 192 × 208 px。
-- 前 9 行为动作，后 2 行为顺时针视线；0° 向上、90° 向右。
-- 每行使用的帧数：`6, 8, 8, 4, 5, 8, 6, 6, 6, 8, 8`。
-- 各动作时长与布局见 [sprite-layout.json](sprite-layout.json)。
+- [Windows 程序源码、构建与测试](desktop/README.md)：C# / Windows Forms / Win32 逐像素透明窗口，不使用第三方运行依赖。
+- [透明精灵图](assets/spritesheet.png)：1536 × 2288 px，8 列 × 11 行，每格 192 × 208 px。
+- **9 种动作、16 向视线，共 73 帧**；[布局与逐帧时长](sprite-layout.json)。
+- `running-right`、`running-left` 是跑步动作；`running` 是思考动作。桌宠菜单里的跑步在原地播放。
 
-这是面向接受 Pets v2 精灵图的导入工作流的素材包。上传 `assets/spritesheet.png` 时可将名称设为“忍野忍”。仓库不包含账号绑定信息；不会自动替其他用户安装或启用宠物。
+角色图像由 AI 图像生成工具生成，经提取、对齐、去底色和组装。部分相邻视线方向较接近，尤其 337.5° 的左向分量较弱，详见 [素材质量摘要](quality-summary.json)。
 
-## 动作一览
+## 检查与隐私
 
-| 状态 | 帧数 | 表现 |
-| --- | ---: | --- |
-| `idle` | 6 | 待机 |
-| `running-right` | 8 | 向右跑 |
-| `running-left` | 8 | 向左跑 |
-| `waving` | 4 | 挥手 |
-| `jumping` | 5 | 跳跃 |
-| `failed` | 8 | 失落 |
-| `waiting` | 6 | 等待输入 |
-| `running` | 6 | 思考工作 |
-| `review` | 6 | 检查结果 |
-| `look-a` | 8 | 视线前半圈 |
-| `look-b` | 8 | 视线后半圈 |
+独立桌宠已验证透明渲染、点击、双击、拖动、缩放、暂停、屏幕边界、右键退出、资源释放及损坏设置恢复。实机预览仅截取专用测试窗口，不包含个人桌面。
 
-`running` 表示专注思考的工作状态；移动由 `running-right` 和 `running-left` 表示。
+公开文件排除了私人制作工程、账号 ID、临时上传链接、个人目录和登录凭据。程序未加入联网、遥测、自动更新、广告或全局键盘钩子。
 
-## 制作与检查
+检查范围与限制见 [SECURITY.md](SECURITY.md)、[隐私扫描结果](privacy-audit.json) 和 [程序测试结果](desktop/validation.json)。发布包附 SHA-256 校验值。
 
-图像使用内置 image generation 生成，再按统一尺寸提取、对齐、去除底色并组装。检查包括帧数、透明空格、角色大小、跳跃落点及视线方向。发布时仅清除文件元数据，PNG 与 GIF 的解码画面保持不变。
+## 角色与许可
 
-已通过本地布局与质量校验；原始成品通过 Pets 服务端预检。四个主要视线方向通过三份独立复核。部分相邻方向变化较轻，尤其 337.5° 的左向分量较弱，详见 [质量摘要](quality-summary.json)。
+这是非官方同人项目。忍野忍及《物语》系列相关权利属于各自权利人，与原作权利方没有官方合作或背书。
 
-## 隐私与安全
-
-发布内容经过单独整理，未包含本地制作工程包、用户目录、账号宠物 ID、上传会话、临时下载链接或登录凭据。媒体元数据已清理，提交使用 GitHub noreply 邮箱。检查范围与结果见 [SECURITY.md](SECURITY.md) 和 [privacy-audit.json](privacy-audit.json)。
-
-## 角色与权利说明
-
-这是个人制作的非官方同人素材项目，与《物语》系列权利方及 OpenAI 没有官方合作或背书。忍野忍及原作相关权利属于各自权利人；本仓库不附带第三方角色或商标的授权，也未为全部素材授予通用开源许可。
-
-本仓库仅发布生成后的宠物成品与预览，不再分发参考用动画设定图。角色背景参考：[《物语》系列官网](https://www.monogatari-series.com/)。
+[桌宠程序源码采用 MIT 许可](desktop/LICENSE)。**角色图片、图标、动画和预览不适用该代码许可**，本仓库不授予第三方角色或商标的授权。参考用动画设定图不在发布范围内。角色背景参考：[《物语》系列官网](https://www.monogatari-series.com/)。

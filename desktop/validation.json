@@ -1,0 +1,50 @@
+{
+  "version": "2.0.0",
+  "date": "2026-09-29",
+  "platform_tested": "Windows 11",
+  "build": {
+    "language": "C#",
+    "runtime": ".NET Framework",
+    "platform": "AnyCPU",
+    "warnings_as_errors": true,
+    "debug_symbols": false
+  },
+  "functional_tests": {
+    "result": "passed",
+    "assertions": 107,
+    "coverage": [
+      "native layered window and visible alpha rendering",
+      "non-activating window",
+      "native single/double/right click messages",
+      "wave and jump return to idle",
+      "dragging and boundary clamping",
+      "four scales",
+      "pause",
+      "recover to primary monitor",
+      "actual menu Exit command",
+      "250 renders without growing GDI handles",
+      "all 73 sprite frames",
+      "cardinal gaze directions and dead zone",
+      "negative monitor coordinates",
+      "settings roundtrip, atomic replacement and malformed input recovery"
+    ]
+  },
+  "antivirus": {
+    "scan_completed": true,
+    "sha256": "22daedb6a2aecdf1fe99fd01b31af1190fd3257053c3d2d63b6ba532193f7a46",
+    "matching_detections": 0,
+    "file": "Shinobu-Oshino-pet.exe",
+    "engine": "Microsoft Defender"
+  },
+  "executable": {
+    "file": "Shinobu-Oshino-pet.exe",
+    "bytes": 1567744,
+    "sha256": "22daedb6a2aecdf1fe99fd01b31af1190fd3257053c3d2d63b6ba532193f7a46",
+    "code_signed": false
+  },
+  "limitations": [
+    "Windows 10 not tested on a separate machine",
+    "Mixed-DPI multi-monitor and physical display hotplug not exercised",
+    "Pattern scans and Defender do not guarantee absence of every vulnerability"
+  ]
+}

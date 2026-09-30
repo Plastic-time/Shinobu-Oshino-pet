@@ -1,11 +1,12 @@
 {
   "date": "2026-09-29",
-  "scope": "Files in this public release; static privacy, metadata, media decoding and local README-link checks",
+  "version": "2.0.0",
   "result": "passed",
   "findings": [],
-  "scanned_file_count_before_report": 22,
+  "scope": "Public source, media and Windows release files; raw and UTF-16 string scans",
+  "scanned_files_before_reports": 44,
   "checks": {
-    "common_secret_patterns": [
+    "secret_and_private_path_patterns": [
       "windows_user_path",
       "unix_user_path",
       "private_machine_identifier",
@@ -19,16 +20,21 @@
       "credential_assignment"
     ],
     "private_email_addresses": "none detected",
-    "png_metadata": "only IHDR, IDAT, IEND chunks retained",
-    "png_files_decoded": 4,
-    "gif_comments": "none",
+    "png_files_checked": 5,
     "gif_files_decoded": 12,
-    "png_gif_decoded_pixels": "compared with originals during preparation; identical",
-    "mp4_source_metadata": "removed via ffmpeg remux with stream copy",
-    "readme_relative_links": "all present",
-    "original_private_archive": "excluded",
-    "account_binding_files": "excluded",
-    "reference_model_sheet": "excluded"
+    "media_private_metadata": "none detected",
+    "relative_document_links": "all present",
+    "private_archive_and_account_binding": "excluded",
+    "debug_symbols_and_test_executable": "excluded",
+    "production_network_and_global_keyboard_apis": "none found in source",
+    "antivirus": {
+      "scan_completed": true,
+      "sha256": "22daedb6a2aecdf1fe99fd01b31af1190fd3257053c3d2d63b6ba532193f7a46",
+      "matching_detections": 0,
+      "file": "Shinobu-Oshino-pet.exe",
+      "engine": "Microsoft Defender"
+    },
+    "commit_identity": "public GitHub username and noreply email"
   },
-  "limitations": "Pattern-based checks are not a guarantee against every possible secret or decoder vulnerability. Public GitHub owner identity remains visible."
+  "limitations": "Static pattern scans and a local antivirus scan are not a complete security audit. Public repository owner identity remains visible."
 }

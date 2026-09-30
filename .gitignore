@@ -6,3 +6,6 @@ work/
 __pycache__/
 .DS_Store
 Thumbs.db
+desktop/bin/
+*.pdb
+*.exe
