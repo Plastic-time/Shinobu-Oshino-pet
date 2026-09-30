@@ -1,0 +1,34 @@
+{
+  "date": "2026-09-29",
+  "scope": "Files in this public release; static privacy, metadata, media decoding and local README-link checks",
+  "result": "passed",
+  "findings": [],
+  "scanned_file_count_before_report": 22,
+  "checks": {
+    "common_secret_patterns": [
+      "windows_user_path",
+      "unix_user_path",
+      "private_machine_identifier",
+      "pet_account_identifier",
+      "upload_session_identifier",
+      "github_token",
+      "api_key",
+      "aws_access_key",
+      "private_key",
+      "signed_or_private_url",
+      "credential_assignment"
+    ],
+    "private_email_addresses": "none detected",
+    "png_metadata": "only IHDR, IDAT, IEND chunks retained",
+    "png_files_decoded": 4,
+    "gif_comments": "none",
+    "gif_files_decoded": 12,
+    "png_gif_decoded_pixels": "compared with originals during preparation; identical",
+    "mp4_source_metadata": "removed via ffmpeg remux with stream copy",
+    "readme_relative_links": "all present",
+    "original_private_archive": "excluded",
+    "account_binding_files": "excluded",
+    "reference_model_sheet": "excluded"
+  },
+  "limitations": "Pattern-based checks are not a guarantee against every possible secret or decoder vulnerability. Public GitHub owner identity remains visible."
+}
