@@ -50,7 +50,6 @@ namespace ShinobuPet
     internal sealed class Preferences
     {
         internal double Scale = 1.25;
-        internal bool Follow = true;
         internal bool Topmost = true;
         internal bool Paused;
         internal bool HasPosition;
@@ -78,7 +77,6 @@ namespace ShinobuPet
                             if (double.TryParse(pair[1], NumberStyles.Float, CultureInfo.InvariantCulture, out scale) &&
                                 (scale == 1 || scale == 1.25 || scale == 1.5 || scale == 2)) result.Scale = scale;
                             break;
-                        case "follow": if (bool.TryParse(pair[1], out flag)) result.Follow = flag; break;
                         case "topmost": if (bool.TryParse(pair[1], out flag)) result.Topmost = flag; break;
                         case "paused": if (bool.TryParse(pair[1], out flag)) result.Paused = flag; break;
                         case "x": if (int.TryParse(pair[1], out number) && Math.Abs((long)number) <= 100000) { result.X = number; hasX = true; } break;
@@ -97,7 +95,7 @@ namespace ShinobuPet
             try
             {
                 Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(path)));
-                string body = "scale=" + Scale.ToString(CultureInfo.InvariantCulture) + "\nfollow=" + Follow +
+                string body = "scale=" + Scale.ToString(CultureInfo.InvariantCulture) +
                     "\ntopmost=" + Topmost + "\npaused=" + Paused + "\nx=" + X + "\ny=" + Y + "\n";
                 string temporary = path + ".tmp";
                 File.WriteAllText(temporary, body);

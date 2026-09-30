@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 using System.Windows.Forms;
 
 namespace ShinobuPet
@@ -39,6 +40,16 @@ namespace ShinobuPet
             catch (Exception ex) { Console.Error.WriteLine("FAIL: " + ex.Message); return 1; }
         }
 
+        private static string FrameDigest(Bitmap frame)
+        {
+            using (MemoryStream stream = new MemoryStream())
+            using (SHA256 hash = SHA256.Create())
+            {
+                frame.Save(stream, ImageFormat.Png);
+                return Convert.ToBase64String(hash.ComputeHash(stream.ToArray()));
+            }
+        }
+
         private static void UnitTests()
         {
             Check(Motion.LookIndex(Point.Empty, new Point(0, -100)) == 0, "up");
@@ -47,8 +58,8 @@ namespace ShinobuPet
             Check(Motion.LookIndex(Point.Empty, new Point(-100, 0)) == 12, "left");
             Check(Motion.LookIndex(Point.Empty, new Point(-1, -100)) == 0, "angle wrap");
             Check(Motion.LookIndex(Point.Empty, new Point(10, 10)) == -1, "pointer dead zone");
-            Check(Motion.FrameAt(4, 0) == 0 && Motion.FrameAt(4, 140) == 1, "jump takeoff timing");
-            Check(Motion.FrameAt(4, 839) == 4 && Motion.FrameAt(4, 840) == -1, "jump ends on time");
+            Check(Motion.FrameAt(4, 0) == 0 && Motion.FrameAt(4, 140) == 1, "compatibility slot timing");
+            Check(Motion.FrameAt(4, 839) == 4 && Motion.FrameAt(4, 840) == -1, "compatibility slot ends on time");
             Rectangle negativeMonitor = new Rectangle(-1920, 0, 1920, 1040);
             Check(Motion.Clamp(new Point(-2500, 2000), new Size(240, 260), negativeMonitor) == new Point(-1920, 780), "negative monitor bounds");
             Check(Motion.Clamp(new Point(10, 20), new Size(240, 260), new Rectangle(0, 0, 100, 100)) == Point.Empty, "undersized working area");
@@ -56,7 +67,7 @@ namespace ShinobuPet
             try
             {
                 Preferences defaults = Preferences.Load(path);
-                Check(defaults.Scale == 1.25 && defaults.Follow && !defaults.HasPosition, "first run defaults");
+                Check(defaults.Scale == 1.25 && !defaults.HasPosition, "first run defaults");
                 defaults.X = -1500; defaults.Y = 330; defaults.Scale = 2; defaults.Paused = true;
                 Check(defaults.Save(path), "save settings");
                 Preferences loaded = Preferences.Load(path);
@@ -64,7 +75,7 @@ namespace ShinobuPet
                 loaded.Scale = 1.5; Check(loaded.Save(path) && Preferences.Load(path).Scale == 1.5, "atomic replacement");
                 File.WriteAllText(path, "scale=NaN\nx=-2147483648\ny=bad\nfollow=bad\npaused=bad\nunknown=value\n");
                 loaded = Preferences.Load(path);
-                Check(loaded.Scale == 1.25 && !loaded.HasPosition && loaded.Follow && !loaded.Paused, "corrupt settings recovery");
+                Check(loaded.Scale == 1.25 && !loaded.HasPosition && !loaded.Paused, "corrupt settings recovery");
             }
             finally
             {
@@ -92,7 +103,7 @@ namespace ShinobuPet
                     {
                         e.Graphics.DrawString("Shinobu Oshino", title, ink, 38, 42);
                         e.Graphics.DrawString("Windows desktop companion", body, ink, 42, 97);
-                        e.Graphics.DrawString("Click to wave\nDouble-click to jump\nDrag to move\nRight-click for settings", body, ink, 42, 220);
+                        e.Graphics.DrawString("Click to blink\nDouble-click to blink\nDrag to move\nRight-click for settings", body, ink, 42, 220);
                         e.Graphics.DrawString("Offline  /  No account  /  Stays where you put her", body, ink, 42, 442);
                     }
                 };
@@ -111,7 +122,7 @@ namespace ShinobuPet
                         if (pet == null)
                         {
                             foreground = GetForegroundWindow();
-                            pet = new PetForm(new Preferences { Follow = false }, false);
+                            pet = new PetForm(new Preferences(), false);
                             pet.Show();
                             Check(GetForegroundWindow() == foreground, "pet does not steal focus");
                             pet.SetScale(2);
@@ -135,6 +146,7 @@ namespace ShinobuPet
                                 Check(nonBackground > 200, "native pet pixels visible");
                                 capture.Save(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "desktop-preview.png"), ImageFormat.Png);
                             }
+                            string restingImage = FrameDigest(pet.GetFrame(0, 0));
                             for (int row = 0; row < 11; row++)
                             {
                                 int count = row < 9 ? Motion.Durations[row].Length : 8;
@@ -142,6 +154,8 @@ namespace ShinobuPet
                                 {
                                     Bitmap frame = pet.GetFrame(row, col);
                                     Check(frame.GetPixel(0, 0).A == 0, "frame has transparent padding");
+                                    if (row != 0 && !(row == 3 && col == 1))
+                                        Check(FrameDigest(frame) == restingImage, "disabled motion keeps the exact resting pose");
                                     pet.Present(row, col);
                                 }
                             }
@@ -152,15 +166,15 @@ namespace ShinobuPet
                         }
                         else if (step == 1 && phase.ElapsedMilliseconds >= SystemInformation.DoubleClickTime + 100)
                         {
-                            Check(pet.Action == 3, "native single click waves");
+                            Check(pet.Action == 3, "native single click blinks");
                             SendMessage(pet.Handle, 0x0203, new IntPtr(1), new IntPtr((180 << 16) | 192));
                             SendMessage(pet.Handle, 0x0202, IntPtr.Zero, new IntPtr((180 << 16) | 192));
-                            Check(pet.Action == 4, "native double click jumps");
+                            Check(pet.Action == 3, "native double click blinks without jumping");
                             phase.Restart(); step++;
                         }
                         else if (step == 2 && phase.ElapsedMilliseconds > 1100)
                         {
-                            Check(pet.Action == -1 && pet.CurrentFrame == 0, "jump returns to idle");
+                            Check(pet.Action == -1 && pet.CurrentFrame == 0, "blink returns to resting pose");
                             Point old = pet.Location;
                             Point pointer = new Point(old.X + 192, old.Y + 180);
                             pet.BeginDrag(pointer);

@@ -17,16 +17,16 @@ namespace ShinobuPet
         private readonly bool persist;
         private readonly Bitmap atlas;
         private readonly Dictionary<int, Bitmap> frames = new Dictionary<int, Bitmap>();
-        private readonly Timer clock = new Timer { Interval = 40 };
+        private readonly Timer clock = new Timer { Interval = 16 };
         private readonly Timer clickDelay = new Timer { Interval = SystemInformation.DoubleClickTime };
         private readonly Stopwatch elapsed = Stopwatch.StartNew();
         private readonly NotifyIcon tray;
         private readonly Icon petIcon;
         private readonly ContextMenuStrip menu = new ContextMenuStrip();
-        private ToolStripMenuItem followItem, pauseItem, topItem;
+        private ToolStripMenuItem pauseItem, topItem;
         private int action = -1, shownFrame = -1;
-        private double actionStart, nextIdle = 4500, lastPointerChange = -10000;
-        private Point lastPointer, downAt, downLocation;
+        private double actionStart, nextIdle = 4500;
+        private Point downAt, downLocation;
         private bool held, dragged, doubleClicked;
         private bool disposed;
 
@@ -39,7 +39,7 @@ namespace ShinobuPet
                 if (stream == null) throw new InvalidDataException("Missing sprite resource");
                 using (Bitmap original = new Bitmap(stream)) atlas = new Bitmap(original);
             }
-            if (atlas.Width != 1536 || atlas.Height != 2288) throw new InvalidDataException("Invalid sprite dimensions");
+            if (atlas.Width != 3072 || atlas.Height != 4576) throw new InvalidDataException("Invalid sprite dimensions");
             AutoScaleMode = AutoScaleMode.None;
             FormBorderStyle = FormBorderStyle.None;
             ShowInTaskbar = false;
@@ -54,7 +54,7 @@ namespace ShinobuPet
                 Location = Motion.Clamp(saved, Size, Screen.FromPoint(saved).WorkingArea);
             }
             else MoveToPrimary();
-            using (Bitmap iconFrame = atlas.Clone(new Rectangle(48, 8, 104, 136), PixelFormat.Format32bppArgb))
+            using (Bitmap iconFrame = atlas.Clone(new Rectangle(114, 36, 168, 168), PixelFormat.Format32bppArgb))
             {
                 IntPtr rawIcon = iconFrame.GetHicon();
                 try { using (Icon borrowed = Icon.FromHandle(rawIcon)) petIcon = (Icon)borrowed.Clone(); }
@@ -102,20 +102,8 @@ namespace ShinobuPet
         {
             ToolStripMenuItem title = new ToolStripMenuItem("忍野忍 · Shinobu Oshino") { Enabled = false };
             menu.Items.Add(title);
-            menu.Items.Add("挥挥手", null, delegate { Play(3); });
-            menu.Items.Add("跳一下", null, delegate { Play(4); });
-            ToolStripMenuItem actions = new ToolStripMenuItem("其他动作");
-            string[] names = { "眨眨眼", "向右原地跑", "向左原地跑", "挥手", "跳跃", "有点失落", "等你回来", "认真思考", "检查一下" };
-            for (int row = 0; row < names.Length; row++)
-            {
-                int chosen = row;
-                actions.DropDownItems.Add(names[row], null, delegate { Play(chosen); });
-            }
-            menu.Items.Add(actions);
+            menu.Items.Add("眨眨眼", null, delegate { Play(3); });
             menu.Items.Add(new ToolStripSeparator());
-            followItem = new ToolStripMenuItem("视线跟随鼠标") { Checked = preferences.Follow, CheckOnClick = true };
-            followItem.Click += delegate { preferences.Follow = followItem.Checked; Save(); };
-            menu.Items.Add(followItem);
             pauseItem = new ToolStripMenuItem("暂停动画") { Checked = preferences.Paused, CheckOnClick = true };
             pauseItem.Click += delegate { SetPaused(pauseItem.Checked); };
             menu.Items.Add(pauseItem);
@@ -139,7 +127,7 @@ namespace ShinobuPet
             menu.Items.Add(new ToolStripSeparator());
             menu.Items.Add("操作说明", null, delegate
             {
-                MessageBox.Show("单击：挥手\n双击：跳跃\n按住左键：拖动\n右键：动作与设置\n托盘图标双击：回到主屏幕\n\n默认固定在原地，偶尔眨眼。移动鼠标时会看向你。\n关闭此程序：右键菜单 → 退出\n\n独立离线运行，无需账号。设置仅保存在本机。\nv2.0.0 · 非官方同人桌宠", "忍野忍 · 操作说明", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("单击或双击：眨眼\n按住左键：拖动\n右键：设置\n托盘图标双击：回到主屏幕\n\n抱膝坐在原地，偶尔眨眼。\n关闭此程序：右键菜单 → 退出\n\n独立离线运行，无需账号。设置仅保存在本机。\nv2.1.0 · 非官方同人桌宠", "忍野忍 · 操作说明", MessageBoxButtons.OK, MessageBoxIcon.Information);
             });
             menu.Items.Add("退出", null, delegate { Close(); });
         }
@@ -159,8 +147,6 @@ namespace ShinobuPet
         {
             if (preferences.Paused || held || menu.Visible) return;
             double now = elapsed.Elapsed.TotalMilliseconds;
-            Point pointer = Cursor.Position;
-            if (pointer != lastPointer) { lastPointer = pointer; lastPointerChange = now; }
             if (action >= 0)
             {
                 int frame = Motion.FrameAt(action, now - actionStart);
@@ -169,12 +155,6 @@ namespace ShinobuPet
                 nextIdle = now + 5500;
             }
             if (now >= nextIdle) { Play(0); return; }
-            if (preferences.Follow && now - lastPointerChange < 1800)
-            {
-                Point eye = new Point(Left + Width / 2, Top + (int)(85 * preferences.Scale));
-                int index = Motion.LookIndex(eye, pointer);
-                if (index >= 0) { Present(9 + index / 8, index % 8); return; }
-            }
             Present(0, 0);
         }
 
@@ -190,9 +170,10 @@ namespace ShinobuPet
                 g.InterpolationMode = InterpolationMode.HighQualityBicubic;
                 g.PixelOffsetMode = PixelOffsetMode.HighQuality;
                 using (ImageAttributes attributes = new ImageAttributes())
+                using (Bitmap source = atlas.Clone(new Rectangle(column * 384, row * 416, 384, 416), PixelFormat.Format32bppArgb))
                 {
                     attributes.SetWrapMode(WrapMode.TileFlipXY);
-                    g.DrawImage(atlas, new Rectangle(Point.Empty, bitmap.Size), column * 192, row * 208, 192, 208, GraphicsUnit.Pixel, attributes);
+                    g.DrawImage(source, new Rectangle(Point.Empty, bitmap.Size), 0, 0, 384, 416, GraphicsUnit.Pixel, attributes);
                 }
             }
             frames.Add(key, bitmap);
@@ -259,7 +240,7 @@ namespace ShinobuPet
             if (e.Button != MouseButtons.Left) return;
             BeginDrag(Cursor.Position);
             doubleClicked = e.Clicks >= 2;
-            if (doubleClicked) Play(4);
+            if (doubleClicked) Play(3);
         }
 
         internal void BeginDrag(Point pointer)

@@ -6,8 +6,8 @@ using System.Windows.Forms;
 [assembly: AssemblyTitle("Shinobu Oshino Pet")]
 [assembly: AssemblyDescription("忍野忍 · 独立 Windows 桌宠")]
 [assembly: AssemblyProduct("Shinobu Oshino Pet")]
-[assembly: AssemblyVersion("2.0.0.0")]
-[assembly: AssemblyFileVersion("2.0.0.0")]
+[assembly: AssemblyVersion("2.1.0.0")]
+[assembly: AssemblyFileVersion("2.1.0.0")]
 
 namespace ShinobuPet
 {

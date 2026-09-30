@@ -1,6 +1,6 @@
 {
   "name": "忍野忍 / Shinobu Oshino",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "sprite_version": 2,
   "file": "assets/spritesheet.png",
   "width": 1536,
@@ -36,7 +36,8 @@
         140,
         140,
         320
-      ]
+      ],
+      "visual_behavior": "blink"
     },
     {
       "row": 1,
@@ -51,7 +52,8 @@
         120,
         120,
         220
-      ]
+      ],
+      "visual_behavior": "seated-hold"
     },
     {
       "row": 2,
@@ -66,7 +68,8 @@
         120,
         120,
         220
-      ]
+      ],
+      "visual_behavior": "seated-hold"
     },
     {
       "row": 3,
@@ -77,7 +80,8 @@
         140,
         140,
         280
-      ]
+      ],
+      "visual_behavior": "blink"
     },
     {
       "row": 4,
@@ -89,7 +93,8 @@
         140,
         140,
         280
-      ]
+      ],
+      "visual_behavior": "seated-hold"
     },
     {
       "row": 5,
@@ -104,7 +109,8 @@
         140,
         140,
         240
-      ]
+      ],
+      "visual_behavior": "seated-hold"
     },
     {
       "row": 6,
@@ -117,7 +123,8 @@
         150,
         150,
         260
-      ]
+      ],
+      "visual_behavior": "seated-hold"
     },
     {
       "row": 7,
@@ -130,7 +137,8 @@
         120,
         120,
         220
-      ]
+      ],
+      "visual_behavior": "seated-hold"
     },
     {
       "row": 8,
@@ -143,17 +151,20 @@
         150,
         150,
         280
-      ]
+      ],
+      "visual_behavior": "seated-hold"
     },
     {
       "row": 9,
       "state": "look-a",
-      "frames": 8
+      "frames": 8,
+      "visual_behavior": "seated-hold"
     },
     {
       "row": 10,
       "state": "look-b",
-      "frames": 8
+      "frames": 8,
+      "visual_behavior": "seated-hold"
     }
   ],
   "look_degrees_clockwise": [
@@ -175,5 +186,7 @@
     337.5
   ],
   "zero_degrees": "up",
-  "sha256": "f3e18189ebe110a517e6b8c33bb6d10cf6ef64dbaafa31848a0aa020aad27133"
+  "sha256": "f3e18189ebe110a517e6b8c33bb6d10cf6ef64dbaafa31848a0aa020aad27133",
+  "motion_profile": "quiet-seated",
+  "motion_note": "Only resting and blink imagery is enabled. Other action and gaze slots hold the identical seated pose."
 }
