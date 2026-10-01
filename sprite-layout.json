@@ -1,6 +1,6 @@
 {
   "name": "忍野忍 / Shinobu Oshino",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "sprite_version": 2,
   "file": "assets/spritesheet.png",
   "width": 1536,
@@ -186,7 +186,7 @@
     337.5
   ],
   "zero_degrees": "up",
-  "sha256": "f3e18189ebe110a517e6b8c33bb6d10cf6ef64dbaafa31848a0aa020aad27133",
-  "motion_profile": "quiet-seated",
-  "motion_note": "Only resting and blink imagery is enabled. Other action and gaze slots hold the identical seated pose."
+  "sha256": "40674e0fc46d425326adbe8d2dd87ffb6d23ea4198e9a9fb6dbb76452e5e9687",
+  "motion_profile": "quiet-seated-v2",
+  "motion_note": "Seated rest and blink only. Foot motion, running, jumping and gaze changes are disabled. Fixed host timings."
 }
